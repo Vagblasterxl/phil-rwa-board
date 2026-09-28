@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="theme-color" content="#07080a" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<title>Phil Board</title>
+<style>
+:root{
+  --bg:#07080a; --card:#11141a; --line:#232833; --ink:#f4f1ea; --mute:#9aa3b2;
+  --gold:#e7c56a; --good:#7dffa3; --bad:#ff6b6b; --mid:#7ab8ff;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif}
+button{font:inherit;cursor:pointer}
+.screen{min-height:100dvh;padding:24px 20px calc(28px + env(safe-area-inset-bottom))}
+#gate{display:flex;flex-direction:column;justify-content:flex-end;background:
+  radial-gradient(800px 400px at 80% -10%,#2a2414 0%,transparent 55%),
+  linear-gradient(180deg,#10130f,#07080a 55%)}
+#gate h1{font-size:64px;letter-spacing:-.04em;margin:0 0 6px}
+#gate p{color:var(--mute);margin:0 0 28px}
+.tap{border:0;border-radius:999px;padding:16px 22px;background:var(--gold);color:#1a1406;font-weight:800;width:100%}
+#roast{display:none;background:#0b0c0e}
+.banner{margin-top:18vh;padding:22px;border:1px solid #3a3018;border-radius:24px;background:linear-gradient(180deg,#1c1810,#0f100d);box-shadow:0 20px 80px #000}
+.banner small{color:var(--gold);letter-spacing:.18em;text-transform:uppercase;font-size:11px}
+.banner h2{font-size:34px;line-height:1.05;margin:10px 0 12px}
+.banner p{color:#d7d0c2;margin:0 0 18px}
+.enter{border:0;width:100%;border-radius:16px;padding:14px;background:var(--ink);color:#111;font-weight:800}
+#app{display:none}
+.head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:16px}
+.head h1{margin:0;font-size:28px}
+.stamp{color:var(--mute);font-size:11px;text-align:right}
+nav{display:flex;gap:8px;overflow:auto;padding:4px 0 16px}
+nav button{border:1px solid var(--line);background:#0d1016;color:var(--ink);border-radius:999px;padding:8px 12px;white-space:nowrap}
+nav button.on{background:var(--gold);color:#1a1406;border-color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.name{font-weight:750}
+.meta{color:var(--mute);font-size:12px;margin-top:4px;line-height:1.45}
+.tag{font-size:10px;font-weight:800;letter-spacing:.06em;border-radius:999px;padding:4px 8px}
+.allow{background:#12331e;color:var(--good)}
+.block{background:#3a1414;color:var(--bad)}
+.qual{background:#13243a;color:var(--mid)}
+.note{font-size:12px;color:var(--mute);margin:0 0 14px;line-height:1.45}
+footer{color:#667;font-size:11px;margin-top:18px}
+</style>
+</head>
+<body>
+<section id="gate" class="screen">
+  <div>
+    <p>FOR PHIL · MON 28 SEP 2026</p>
+    <h1>Phil.</h1>
+    <p>Tap once. Ken has something to say. Then the board opens.</p>
+    <button class="tap" id="go">Tap</button>
+  </div>
+</section>
+<section id="roast" class="screen">
+  <div class="banner" id="banner">
+    <small>A note from Ken</small>
+    <h2>Ken is badass.</h2>
+    <p>Better than you at golf, Phil.<br>He is not the true champion. He just talks like one.</p>
+    <button class="enter" id="enter">Take the banner away</button>
+  </div>
+</section>
+<main id="app" class="screen">
+  <div class="head">
+    <div>
+      <h1>Board</h1>
+      <div class="meta">Product ≠ token. Not advice.</div>
+    </div>
+    <div class="stamp">as-of 2026-09-28<br>rwa.xyz books</div>
+  </div>
+  <p class="note">Distributed RWA $38.58B. Represented $358B is a different book — do not add them. Green = reachable for a US person in LA on official rails. Red = blocked on the live product. Blue = qualified / KYC path.</p>
+  <nav id="nav"></nav>
+  <div id="list"></div>
+  <footer>Sources: rwa.xyz, issuer pages, Fed/BLS calendars, DTCC PRs. Token does not entitle you to the T-bills, the bar, or the share.</footer>
+</main>
+<script>
+const SLEEVES = [
+  {id:'q1', label:'Credit', items:[
+    {n:'FIGR / Figure', a:'BLOCK', t:'Company / rail token. HELOC book is represented ~$23B, not the coin.', x:'Token ≠ the loans.'},
+    {n:'SYRUP / Maple', a:'BLOCK', t:'Governance. syrupUSDC is the product and is blocked for US retail on official rails.', x:'Print protocol AUM, rwa distributed, and syrup supplied separately.'},
+    {n:'CFG / Centrifuge', a:'BLOCK', t:'Issuer token. JAAA / JTRSY product tokens blocked for US mint.', x:'Quiet credit sleeve. Token ≠ the CLO.'},
+    {n:'CPOOL → CLEAR', a:'BLOCK', t:'Credit venue token. Snapshot vote open Sep 25–Oct 2.', x:'Migration is the near catalyst, not a T-bill.'}
+  ]},
+  {id:'q2', label:'Cash', items:[
+    {n:'WTGXX', a:'ALLOW', t:'WisdomTree 1940 Act money fund. CA retail path on WisdomTree Prime.', x:'Product, not ONDO.'},
+    {n:'BENJI / WTGXX cousin', a:'ALLOW', t:'Franklin tokenized MMF. Retail app path exists.', x:'Fund share, not a L1 coin.'},
+    {n:'USYC', a:'QUALIFIED-ONLY', t:'Circle tokenized T-bills. Institutional / qualified.', x:'Do not mix Circle widget AUM with rwa.xyz.'},
+    {n:'USDY', a:'BLOCK', t:'Ondo short-duration yield. Official rails block US persons.', x:'USDY ≠ ONDO.'},
+    {n:'BUIDL', a:'QUALIFIED-ONLY', t:'BlackRock / Securitize institutional liquidity fund.', x:'No retail mint.'},
+    {n:'USTB / OUSG', a:'QUALIFIED-ONLY', t:'Superstate / Ondo treasury products. US qualified only where offered.', x:'OUSG ≠ ONDO.'}
+  ]},
+  {id:'q3', label:'Rails', items:[
+    {n:'CC / Canton', a:'ALLOW', t:'Institutional L1 under DTCC + Broadridge repo. Represented book is huge; distributed CC is the event token.', x:'Holding CC ≠ holding DTC-tokenized SPY.'},
+    {n:'LINK', a:'ALLOW', t:'Messaging / CCIP. Banks name it. Not DTCC volume.', x:'Liquid rail token.'},
+    {n:'HBAR', a:'ALLOW', t:'Hedera gas. Distributed RWA on the dashboard is small vs the tape.', x:'Narrative L1, not a T-bill.'},
+    {n:'SEI', a:'ALLOW', t:'Venue. Ondo USDY is most of Sei RWA. Dinari S&P on Sei is announced, not printed.', x:'Venue token ≠ USDY.'},
+    {n:'W / Wormhole', a:'ALLOW', t:'Bridge that moves BUIDL/USDY across chains. Thin mcap.', x:'Bridge beta.'},
+    {n:'QNT', a:'ALLOW', t:'Overledger / TCH headline. Go-live 1H 2027. Utility language is not “must buy QNT.”', x:'Event tape.'}
+  ]},
+  {id:'q4', label:'Gold + stocks', items:[
+    {n:'PAXG', a:'ALLOW', t:'Paxos gold. OCC trust. London vault. US reachable. ~$1.85B.', x:'Bar redeem ~430 oz. Retail exit = sell token.'},
+    {n:'XAUT', a:'BLOCK', t:'Tether Gold. ~$2.93B. Issuer path closed to US persons.', x:'Swiss full-bar only. Prefer PAXG or GLD.'},
+    {n:'AZG', a:'BLOCK', t:'Reserve token, 23 holders, in-ground + tailings. Not an ounce-coin.', x:'Skip.'},
+    {n:'Ondo Stocks', a:'BLOCK', t:'~$869M. Site still: not available to US persons. Oasis Pro FINRA is a license, not this mint.', x:'SPYon ≠ a DTC share.'},
+    {n:'Dinari dShares', a:'QUALIFIED-ONLY', t:'US KYC path. Tiny book ($13–20M). Sei not live.', x:'Confirm the app lets you in before you care.'},
+    {n:'ONDO', a:'ALLOW', t:'Company / governance token ~$0.53. Circ ~4.87B / 10B. Next cliff 18 Jan 2027.', x:'ONDO ≠ USDY ≠ SPY.'},
+    {n:'HIP-3 / TradeXYZ', a:'ALLOW', t:'Perp book. $3.92B OI. Gold xyz ~$288M OI.', x:'Leverage, not the bar and not the share.'}
+  ]},
+  {id:'cal', label:'Dates', items:[
+    {n:'Fri Oct 2 · 8:30 ET', a:'ALLOW', t:'NFP. Hits everything.', x:''},
+    {n:'Now → Thu Oct 2', a:'ALLOW', t:'CPOOL → CLEAR Snapshot still open.', x:''},
+    {n:'Wed Oct 14 · 8:30 ET', a:'ALLOW', t:'CPI. Gold + bills.', x:''},
+    {n:'Oct 27–28 / Wed 2pm', a:'ALLOW', t:'FOMC. No SEP.', x:''},
+    {n:'October — day unset', a:'ALLOW', t:'DTCC Tokenization Service commercial launch. July 15 trades already ran.', x:'Do not invent a day.'},
+    {n:'Dec 8–9', a:'ALLOW', t:'FOMC + last 2026 dots.', x:''}
+  ]}
+];
+const nav = document.getElementById('nav');
+const list = document.getElementById('list');
+function paint(id){
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on', b.dataset.id===id));
+  const s = SLEEVES.find(x=>x.id===id);
+  list.innerHTML = s.items.map(i=>`<article class="card"><div class="row"><div class="name">${i.n}</div><span class="tag ${i.a==='ALLOW'?'allow':i.a==='BLOCK'?'block':'qual'}">${i.a}</span></div><div class="meta">${i.t}${i.x?'<br>'+i.x:''}</div></article>`).join('');
+}
+SLEEVES.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.textContent=s.label; b.dataset.id=s.id;
+  b.onclick=()=>paint(s.id);
+  nav.appendChild(b);
+  if(!i) paint(s.id);
+});
+document.getElementById('go').onclick=()=>{
+  document.getElementById('gate').style.display='none';
+  const r=document.getElementById('roast');
+  r.style.display='block';
+  setTimeout(()=>document.getElementById('banner').scrollIntoView({behavior:'smooth',block:'center'}),40);
+};
+document.getElementById('enter').onclick=()=>{
+  document.getElementById('roast').style.display='none';
+  document.getElementById('app').style.display='block';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+</script>
+</body>
+</html>
